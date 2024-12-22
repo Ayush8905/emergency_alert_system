@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # alert_system
 
 Emergency alert system
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# emergency_alert_system 
+>>>>>>> 6c898247c970a8729c23b74905cdd543f9baf1a0
