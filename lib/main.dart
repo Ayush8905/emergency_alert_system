@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:alert_system/UI/auth/login_screen.dart';
 import 'package:alert_system/UI/register_page.dart';
 import 'package:alert_system/firebase_options.dart';
-import 'UI/HomePage.dart';
+import 'User/HomePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
