@@ -1,4 +1,4 @@
-import 'package:alert_system/UI/login_screen.dart';
+import 'package:alert_system/Screen/auth_screen/login_screen/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

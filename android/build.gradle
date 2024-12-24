@@ -3,6 +3,17 @@ allprojects {
         google()
         mavenCentral()
     }
+
+}
+
+buildscript {
+    repositories {
+        google()  // Ensure this is present
+        mavenCentral()  // Ensure this is present
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.3.2'// Update this line to the latest version
+    }
 }
 
 rootProject.buildDir = "../build"

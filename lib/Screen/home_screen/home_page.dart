@@ -1,14 +1,80 @@
 import 'package:flutter/material.dart';
-import 'map_screen.dart'; // Import the map screen file
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String username = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsername();
+  }
+
+  Future<void> fetchUsername() async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Fetch the username from Firestore (replace 'users' with your collection name)
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        setState(() {
+          username = userDoc['name'] ?? "User";
+        });
+      } else {
+        setState(() {
+          username = "Guest";
+        });
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+      setState(() {
+        username = "Error";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Dashboard"),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(
+                'https://via.placeholder.com/150', // Replace with actual profile image URL
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(username),
+          ],
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              // Handle menu actions
+              print("Selected: $value");
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(value: "Profile", child: Text("Profile")),
+              const PopupMenuItem(value: "Settings", child: Text("Settings")),
+              const PopupMenuItem(value: "Help", child: Text("Help")),
+            ],
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,10 +91,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Navigate to the Map Screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapScreen()),
-                );
+                Navigator.pushNamed(context, '/mapscreen');
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -43,6 +106,35 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Handle emergency contact action
+                print("Emergency Contact Pressed");
+              },
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.contact_phone, color: Colors.white),
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Handle AI assistance action
+                print("AI Assistance Pressed");
+              },
+              backgroundColor: Colors.green,
+              child: const Icon(Icons.smart_toy, color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }

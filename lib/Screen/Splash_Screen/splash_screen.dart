@@ -1,5 +1,5 @@
-import 'package:alert_system/UI/login_screen.dart';
-import 'package:alert_system/UI/register_page.dart';
+import 'package:alert_system/Screen/auth_screen/login_screen/login_screen.dart';
+import 'package:alert_system/Screen/auth_screen/register_screen/register_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -10,7 +10,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
 
   @override
   void initState() {

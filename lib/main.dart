@@ -1,10 +1,12 @@
-import 'package:alert_system/UI/splash_screen.dart';
+import 'package:alert_system/Screen/Splash_Screen/splash_screen.dart';
+import 'package:alert_system/Screen/map_screen/map_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:alert_system/UI/auth/login_screen.dart';
-import 'package:alert_system/UI/register_page.dart';
+import 'package:alert_system/Screen/auth_screen/login_screen/login_screen.dart';
+import 'package:alert_system/Screen/auth_screen/register_screen/register_page.dart';
 import 'package:alert_system/firebase_options.dart';
-import 'User/HomePage.dart';
+import 'package:alert_system/Screen/map_screen/map_screen.dart';
+import 'Screen/home_screen/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,13 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/login':(context)=>const LoginPage(),
         '/home': (context) => const HomePage(),
+        '/mapscreen':(context)=> const MapScreen(),
       },
     );
   }
 }
+
+
+
+
+
