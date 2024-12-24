@@ -27,3 +27,6 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+defaultConfig {
+    buildConfigField "String", "MAPS_API_KEY", "\"${MAPS_API_KEY}\""
+}

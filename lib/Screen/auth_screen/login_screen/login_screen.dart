@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_core/firebase_core.dart'; // Make sure Firebase is initialized
+// Import the flutter_svg package
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,20 +16,13 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final phoneController = TextEditingController();
-  final otpController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  bool isOtpSent = false;
-  String? verificationId;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    phoneController.dispose();
-    otpController.dispose();
     super.dispose();
   }
 
@@ -72,93 +67,13 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _sendOtp() async {
-    String phoneNumber = phoneController.text.trim();
-    if (phoneNumber.isEmpty) {
-      Fluttertoast.showToast(
-        msg: "Please enter your phone number.",
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-      return;
-    }
-
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Auto-resolve OTP
-        await _auth.signInWithCredential(credential);
-        Fluttertoast.showToast(
-          msg: "Phone number automatically verified and logged in!",
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-        );
-        Navigator.pushReplacementNamed(context, '/home');
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        Fluttertoast.showToast(
-          msg: "Verification failed: ${e.message}",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          this.verificationId = verificationId;
-          isOtpSent = true;
-        });
-        Fluttertoast.showToast(
-          msg: "OTP sent to $phoneNumber",
-          backgroundColor: Colors.blue,
-          textColor: Colors.white,
-        );
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        setState(() {
-          this.verificationId = verificationId;
-        });
-      },
-    );
-  }
-
-  void _verifyOtp() async {
-    String otp = otpController.text.trim();
-    if (otp.isEmpty || verificationId == null) {
-      Fluttertoast.showToast(
-        msg: "Please enter the OTP.",
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-      return;
-    }
-
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId!,
-        smsCode: otp,
-      );
-      await _auth.signInWithCredential(credential);
-      Fluttertoast.showToast(
-        msg: "Phone number verified and logged in!",
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Invalid OTP. Please try again.",
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
         backgroundColor: Colors.deepPurple,
+        elevation: 0,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -177,12 +92,34 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 40),
+
+                  // Display SVG logo
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/illustrations/login.svg',  // Path to your SVG file
+                      height: 300,  // Adjust the height as needed
+                    ),
+                  ),
+
+                  // Welcome text
+                  Center(
+                    child: Text(
+                      'Welcome Back!',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
                   // Email field
                   TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Email",
-                      prefixIcon: Icon(Icons.email),
+                      prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -200,13 +137,14 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+
                   // Password field
                   TextFormField(
                     controller: passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Password",
-                      prefixIcon: Icon(Icons.lock),
+                      prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -221,7 +159,8 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 30),
+
                   // Login Button
                   ElevatedButton(
                     onPressed: _loginWithEmail,
@@ -237,55 +176,9 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const Divider(),
-                  const SizedBox(height: 16),
-                  // Phone field
-                  TextFormField(
-                    controller: phoneController,
-                    decoration: const InputDecoration(
-                      labelText: "Phone Number",
-                      prefixIcon: Icon(Icons.phone),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone,
-                  ),
-                  const SizedBox(height: 16),
-                  // OTP Section
-                  if (isOtpSent)
-                    TextFormField(
-                      controller: otpController,
-                      decoration: const InputDecoration(
-                        labelText: "Enter OTP",
-                        prefixIcon: Icon(Icons.message),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: isOtpSent ? _verifyOtp : _sendOtp,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      backgroundColor: Colors.deepPurple,
-                    ),
-                    child: Text(
-                      isOtpSent ? "Verify OTP" : "Send OTP",
-                      style: const TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+
+                  // Register link
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, '/register');
@@ -293,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text(
                       "Don't have an account? Register",
                       style: TextStyle(
-                        color: Colors.deepPurple,
+                        color: Colors.white,
                       ),
                     ),
                   ),

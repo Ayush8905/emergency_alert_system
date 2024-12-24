@@ -41,13 +41,13 @@ class _MapScreenState extends State<MapScreen> {
             ));
 
             // Add circle
-            Color zoneColor = riskLevel.trim().toLowerCase() == "high" ? Colors.red : Colors.orange;
+            Color zoneColor = riskLevel.trim().toLowerCase() == "high" ? Colors.black : Colors.red;
 
             _circles.add(Circle(
               circleId: CircleId('$lat,$lng'),
               center: LatLng(lat, lng),
               radius: 200,
-              fillColor: zoneColor.withValues(), // Transparent fill
+              fillColor: zoneColor.withOpacity(0.1), // Transparent fill
               strokeColor: zoneColor,
               strokeWidth: 1,
             ));
