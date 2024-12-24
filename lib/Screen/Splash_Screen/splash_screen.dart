@@ -1,4 +1,4 @@
-import 'package:alert_system/UI/auth/login_screen.dart';
+import 'package:alert_system/UI/login_screen.dart';
 import 'package:alert_system/UI/register_page.dart';
 import 'package:flutter/material.dart';
 

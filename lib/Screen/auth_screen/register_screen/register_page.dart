@@ -1,4 +1,4 @@
-import 'package:alert_system/UI/auth/login_screen.dart';
+import 'package:alert_system/UI/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
 
         // Navigate to the login page (or home page)
-        Navigator.pop(context); // Navigate back to the previous screen (Login page)
+        Navigator.pushReplacementNamed(context, '/login'); // Navigate back to the previous screen (Login page)
       } on FirebaseAuthException catch (e) {
         // Handle Firebase errors
         String errorMessage = 'Registration failed. Please try again.';
